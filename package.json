@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "@prisma/client": "^6.1.0",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.2",
+    "express": "^4.21.2",
+    "node-postgres": "^0.6.2",
+    "typescript": "^5.7.2"
+  }
+}
