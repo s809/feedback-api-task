@@ -14,10 +14,11 @@ datasource db {
 }
 
 model User {
-  id     Int     @id @default(autoincrement())
-  email  String  @unique
-  avatar String?
-  posts  Post[]
+  id      Int      @id @default(autoincrement())
+  email   String   @unique
+  avatar  String?
+  posts   Post[]
+  upvotes Upvote[]
 }
 
 model Post {
@@ -32,6 +33,7 @@ model Post {
   author      User         @relation(fields: [author_id], references: [id])
   created_at  DateTime     @default(now())
   updated_at  DateTime     @updatedAt
+  upvotes     Upvote[]
 }
 
 model PostCategory {
@@ -44,4 +46,13 @@ model PostStatus {
   id    Int    @id @default(autoincrement())
   name  String @db.VarChar(255)
   posts Post[]
+}
+
+model Upvote {
+  user_id Int
+  user    User @relation(fields: [user_id], references: [id])
+  post_id Int
+  post    Post @relation(fields: [post_id], references: [id])
+
+  @@id([user_id, post_id])
 }
