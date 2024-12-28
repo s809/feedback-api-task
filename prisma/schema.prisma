@@ -14,11 +14,19 @@ datasource db {
 }
 
 model User {
-  id      Int      @id @default(autoincrement())
-  email   String   @unique
-  avatar  String?
-  posts   Post[]
-  upvotes Upvote[]
+  id            Int           @id @default(autoincrement())
+  email         String        @unique
+  avatar        String?
+  access_tokens AccessToken[]
+  posts         Post[]
+  upvotes       Upvote[]
+}
+
+model AccessToken {
+  id      Int    @id @default(autoincrement())
+  user_id Int
+  user    User   @relation(fields: [user_id], references: [id])
+  token   String @db.VarChar(255)
 }
 
 model Post {
