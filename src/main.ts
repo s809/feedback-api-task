@@ -6,8 +6,9 @@ const port = process.env.PORT || 8000;
 
 const app = express();
 
-// Force JSON on POST requests
+// Force JSON on requests with body
 app.post("*", express.json({ type: () => true }));
+app.patch("*", express.json({ type: () => true }));
 
 registerRoutes(app);
 
