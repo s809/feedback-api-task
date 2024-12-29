@@ -32,6 +32,27 @@ export function validateForm(schema: Joi.Schema): RequestHandler {
     };
 }
 
+/**
+ * Returns a middleware which validates a request query against the provided schema.
+ * @param schema Schema to validate against.
+ * @returns Ready to use middleware.
+ */
+export function validateQuery(schema: Joi.Schema): RequestHandler {
+    return (req, res, next) => {
+        const validationResult = schema.validate(req.query);
+
+        if (validationResult.error) {
+            res.status(400).send({
+                message: "Query validation failed",
+                details: Object.fromEntries(validationResult.error.details.map(item => [item.path[0], item.message]))
+            });
+            return;
+        }
+
+        next();
+    };
+}
+
 export function validatePathIds(params: string[]): RequestHandler {
     return (req, res, next) => {
         for (const param of params) {

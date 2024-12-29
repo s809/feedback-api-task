@@ -1,14 +1,45 @@
 import { Express } from "express";
 import { loginRequired } from "../auth/middlewares";
-import { validateForm, validatePathIds } from "../validation";
-import { postCreationSchema, postUpdateSchema } from "./schemas";
+import { validateForm, validatePathIds, validateQuery } from "../validation";
+import { postCreationSchema, postListSchema, postUpdateSchema } from "./schemas";
 import { prisma } from "../database";
 import { Prisma } from "@prisma/client";
 import * as votes from "./votes/routes";
 
 export function registerRoutes(app: Express) {
-    app.get("/posts", async (req, res) => {
-        res.status(200).send(await prisma.post.findMany());
+    app.get("/posts", validateQuery(postListSchema), async (req, res) => {
+        res.status(200).send(await prisma.post.findMany({
+            where: {
+                ...req.query.category_ids && {
+                    category_id: {
+                        in: (req.query.category_ids as string).split(",").map(id => parseInt(id))
+                    },
+                },
+                ...req.query.status_ids && {
+                    status_id: {
+                        in: (req.query.status_ids as string).split(",").map(id => parseInt(id))
+                    }
+                },
+            },
+            orderBy: {
+                ...req.query.created_at_order && {
+                    created_at: req.query.created_at_order as Prisma.SortOrder,
+                },
+                ...req.query.upvote_order && {
+                    upvotes: {
+                        _count: req.query.upvote_order as Prisma.SortOrder
+                    }
+                }
+            },
+            include: {
+                category: true,
+                status: true,
+                author: true,
+                _count: {
+                    select: { upvotes: true },
+                },
+            }
+        }));
     });
 
     app.post("/posts", loginRequired, validateForm(postCreationSchema), async (req, res) => {
