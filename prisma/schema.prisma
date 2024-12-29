@@ -17,9 +17,18 @@ model User {
   id            Int           @id @default(autoincrement())
   email         String        @unique
   avatar        String?
+  credentials   Credentials?
   access_tokens AccessToken[]
   posts         Post[]
   upvotes       Upvote[]
+}
+
+model Credentials {
+  user_id Int
+  user    User @relation(fields: [user_id], references: [id])
+  password      String        @db.VarChar(255)
+
+  @@id([user_id])
 }
 
 model AccessToken {

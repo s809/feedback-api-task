@@ -1,9 +1,11 @@
 {
   "dependencies": {
     "@prisma/client": "^6.1.0",
+    "@types/bcrypt": "^5.0.2",
     "@types/express": "^5.0.0",
     "@types/joi": "^17.2.2",
     "@types/node": "^22.10.2",
+    "bcrypt": "^5.1.1",
     "express": "^4.21.2",
     "joi": "^17.13.3",
     "node-postgres": "^0.6.2",

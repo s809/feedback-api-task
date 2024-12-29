@@ -1,8 +1,6 @@
 import { RequestHandler, Router } from "express";
 import { prisma } from "../database";
-import Joi from "joi";
-
-const tokenSchema = Joi.string().hex().length(32);
+import { tokenSchema } from "../schemas";
 
 const attemptLogin: RequestHandler = async (req, res, next) => {
     const validationResult = tokenSchema.validate(req.headers.authorization);
