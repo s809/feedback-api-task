@@ -4,6 +4,7 @@ import { userRegistrationSchema, validateForm } from "../schemas";
 import { prisma } from "../database";
 import bcrypt from "bcrypt";
 import { Prisma } from "@prisma/client";
+import { generateTokenFor } from "../auth/access_tokens";
 
 export function registerRoutes(app: Express) {
     app.post("/user", loggedOutOnly, validateForm(userRegistrationSchema), async (req, res) => {
@@ -36,17 +37,8 @@ export function registerRoutes(app: Express) {
             }
         });
 
-        // Generate access token
-        const accessToken = require("crypto").randomBytes(16).toString('hex');
-        await prisma.accessToken.create({
-            data: {
-                user_id: user.id,
-                token: accessToken,
-            }
-        });
-
         res.status(200).send({
-            access_token: accessToken,
+            access_token: await generateTokenFor(user),
             user: user
         });
     });

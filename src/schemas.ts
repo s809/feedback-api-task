@@ -9,6 +9,12 @@ export const userRegistrationSchema = Joi.object({
     password: Joi.string().required().min(8).max(255)
 }).unknown(false);
 
+export const userLoginSchema = Joi.object({
+    email: Joi.string().required().email().max(255),
+    password: Joi.string().required().min(8).max(255)
+}).unknown(false);
+
+
 /**
  * Returns a middleware which validates a request body against the provided schema.
  * @param schema Schema to validate against.

@@ -9,7 +9,7 @@ const attemptLogin: RequestHandler = async (req, res, next) => {
         return next();
     }
 
-    const { user } = await prisma.accessToken.findFirst({
+    const { user, token } = await prisma.accessToken.findFirst({
         where: {
             token: validationResult.value
         },
@@ -24,6 +24,8 @@ const attemptLogin: RequestHandler = async (req, res, next) => {
     }
 
     req.user = user;
+    req.accessToken = token;
+    
     next();
 };
 
