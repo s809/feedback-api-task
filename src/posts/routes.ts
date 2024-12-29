@@ -4,6 +4,7 @@ import { validateForm, validatePathIds } from "../validation";
 import { postCreationSchema, postUpdateSchema } from "./schemas";
 import { prisma } from "../database";
 import { Prisma } from "@prisma/client";
+import * as votes from "./votes/routes";
 
 export function registerRoutes(app: Express) {
     app.get("/posts", async (req, res) => {
@@ -116,8 +117,8 @@ export function registerRoutes(app: Express) {
         } catch (e) {
             if (e instanceof Prisma.PrismaClientKnownRequestError) {
                 if (e.code === 'P2025') {
-                    res.status(400).send({
-                        message: e.meta!.cause
+                    res.status(404).send({
+                        message: "Post with this ID does not exist"
                     });
                     return;
                 }
@@ -147,4 +148,6 @@ export function registerRoutes(app: Express) {
             throw e;
         }
     });
+
+    votes.registerRoutes(app);
 }
