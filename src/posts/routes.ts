@@ -8,7 +8,7 @@ import * as votes from "./votes/routes";
 
 export function registerRoutes(app: Express) {
     app.get("/posts", validateQuery(postListSchema), async (req, res) => {
-        res.status(200).send(await prisma.post.findMany({
+        const rawPosts = await prisma.post.findMany({
             where: {
                 ...req.query.category_ids && {
                     category_id: {
@@ -41,12 +41,19 @@ export function registerRoutes(app: Express) {
             },
             skip: 10 * (parseInt(req.query.page as string ?? 0) - 1),
             take: 10
+        });
+        const posts = rawPosts.map(post => ({
+            ...post,
+            upvotes: post._count.upvotes,
+            _count: undefined
         }));
+
+        res.status(200).send(posts);
     });
 
     app.post("/posts", loginRequired, validateForm(postCreationSchema), async (req, res) => {
         try {
-            const post = await prisma.post.create({
+            const rawPost = await prisma.post.create({
                 data: {
                     title: req.body.title,
                     description: req.body.description,
@@ -73,6 +80,7 @@ export function registerRoutes(app: Express) {
                     },
                 }
             });
+            const post = { ...rawPost, upvotes: rawPost._count.upvotes, _count: undefined };
 
             res.status(200).send(post);
         } catch (e) {
@@ -89,7 +97,7 @@ export function registerRoutes(app: Express) {
     });
 
     app.get("/posts/:id", validatePathIds(["id"]), async (req, res) => {
-        const post = await prisma.post.findFirst({
+        const rawPost = await prisma.post.findFirst({
             where: {
                 id: parseInt(req.params.id)
             },
@@ -103,19 +111,20 @@ export function registerRoutes(app: Express) {
             }
         });
 
-        if (!post) {
+        if (!rawPost) {
             res.status(404).send({
                 message: "Post with this ID does not exist"
             });
             return;
         }
+        const post = { ...rawPost, upvotes: rawPost._count.upvotes, _count: undefined };
 
         res.status(200).send(post);
     });
 
     app.patch("/posts/:id", loginRequired, validatePathIds(["id"]), validateForm(postUpdateSchema), async (req, res) => {
         try {
-            const post = await prisma.post.update({
+            const rawPost = await prisma.post.update({
                 where: {
                     id: parseInt(req.params.id)
                 },
@@ -145,6 +154,7 @@ export function registerRoutes(app: Express) {
                     },
                 }
             });
+            const post = { ...rawPost, upvotes: rawPost._count.upvotes, _count: undefined };
 
             res.status(200).send(post);
         } catch (e) {

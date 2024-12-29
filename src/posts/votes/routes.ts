@@ -7,7 +7,7 @@ import { validatePathIds } from "../../validation";
 export function registerRoutes(app: Express) {
     app.post("/posts/:id/upvote", loginRequired, validatePathIds(["id"]), async (req, res) => {
         try {
-            const post = await prisma.post.update({
+            const rawPost = await prisma.post.update({
                 where: {
                     id: parseInt(req.params.id)
                 },
@@ -37,6 +37,7 @@ export function registerRoutes(app: Express) {
                     },
                 }
             });
+            const post = { ...rawPost, upvotes: rawPost._count.upvotes, _count: undefined };
 
             res.status(200).send(post);
         } catch (e) {
@@ -54,7 +55,7 @@ export function registerRoutes(app: Express) {
 
     app.delete("/posts/:id/upvote", loginRequired, validatePathIds(["id"]), async (req, res) => {
         try {
-            const post = await prisma.post.update({
+            const rawPost = await prisma.post.update({
                 where: {
                     id: parseInt(req.params.id)
                 },
@@ -75,6 +76,7 @@ export function registerRoutes(app: Express) {
                     },
                 }
             });
+            const post = { ...rawPost, upvotes: rawPost._count.upvotes, _count: undefined };
 
             res.status(200).send(post);
         } catch (e) {
