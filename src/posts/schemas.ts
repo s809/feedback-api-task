@@ -5,6 +5,7 @@ export const postListSchema = Joi.object({
     status_ids: Joi.string().optional().regex(/\d+(,\d+)*/),
     upvote_order: Joi.string().optional().allow("asc", "desc").only(),
     created_at_order: Joi.string().optional().allow("asc", "desc").only(),
+    page: Joi.number().optional().min(1).integer()
 }).unknown(true);
 
 export const postCreationSchema = Joi.object({

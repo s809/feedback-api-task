@@ -38,7 +38,9 @@ export function registerRoutes(app: Express) {
                 _count: {
                     select: { upvotes: true },
                 },
-            }
+            },
+            skip: 10 * (parseInt(req.query.page as string ?? 0) - 1),
+            take: 10
         }));
     });
 
