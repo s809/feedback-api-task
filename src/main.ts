@@ -7,15 +7,7 @@ const port = process.env.PORT || 8000;
 const app = express();
 
 // Force JSON on POST requests
-app.post("*", express.json({ type: () => true }), (req, res, next) => {
-    if (!Object.keys(req.body).length) {
-        res.status(400).send({
-            message: "JSON body is invalid or missing"
-        });
-        return;
-    }
-    next();
-});
+app.post("*", express.json({ type: () => true }));
 
 registerRoutes(app);
 
