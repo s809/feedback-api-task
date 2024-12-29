@@ -15,4 +15,9 @@ export const postCreationSchema = Joi.object({
     status_id: Joi.number().required(),
 }).unknown(false);
 
-export const postUpdateSchema = postCreationSchema;
+export const postUpdateSchema = Joi.object({
+    title: Joi.string().optional().max(255),
+    description: Joi.string().optional().max(4096),
+    category_id: Joi.number().optional(),
+    status_id: Joi.number().optional(),
+}).unknown(false);
