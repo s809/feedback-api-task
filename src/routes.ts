@@ -4,6 +4,7 @@ import * as users from "./users/routes";
 import * as postCategories from "./post_categories/routes";
 import * as postStatuses from "./post_statuses/routes";
 import * as posts from "./posts/routes";
+import * as swagger from "./swagger/routes";
 
 export function registerRoutes(app: Express) {
     auth.registerRoutes(app);
@@ -11,4 +12,5 @@ export function registerRoutes(app: Express) {
     postCategories.registerRoutes(app);
     postStatuses.registerRoutes(app);
     posts.registerRoutes(app);
+    swagger.registerRoutes(app);
 }
