@@ -1,3 +1,4 @@
+import 'source-map-support/register';
 import express from "express";
 import { registerRoutes } from "./routes";
 
@@ -26,7 +27,7 @@ app.use(function (err, req, res, next) {
     }
 
     if (err.statusCode === 500) {
-        console.error(err.message);
+        console.error(err.stack);
         res.status(err.statusCode).send({
             message: "Internal server error"
         });
