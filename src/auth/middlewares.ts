@@ -1,6 +1,6 @@
 import { RequestHandler, Router } from "express";
 import { prisma } from "../database";
-import { tokenSchema } from "../schemas";
+import { tokenSchema } from "./schemas";
 
 const attemptLogin: RequestHandler = async (req, res, next) => {
     const validationResult = tokenSchema.validate(req.headers.authorization);
@@ -25,7 +25,7 @@ const attemptLogin: RequestHandler = async (req, res, next) => {
 
     req.user = user;
     req.accessToken = token;
-    
+
     next();
 };
 

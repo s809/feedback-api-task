@@ -1,9 +1,10 @@
 import { Express } from "express";
 import { loggedOutOnly, loginRequired } from "./middlewares";
-import { userLoginSchema, validateForm } from "../schemas";
+import { validateForm } from "../validation";
 import { prisma } from "../database";
 import bcrypt from "bcrypt";
 import { generateTokenFor } from "./access_tokens";
+import { userLoginSchema } from "./schemas";
 
 export function registerRoutes(app: Express) {
     app.post("/auth/login", loggedOutOnly, validateForm(userLoginSchema), async (req, res) => {
